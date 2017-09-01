@@ -2,6 +2,30 @@ ESX = nil
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
+
+
+function getDvmLicense(identifier)
+    return MySQL.Sync.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {
+        ['@identifier'] = identifier
+    })
+end
+
+
+
+
+RegisterServerEvent("dmv:getlicence")
+AddEventHandler("dmv:getlicence", function()
+
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local result = getDvmLicense(xPlayer.identifier)
+    TriggerClientEvent('dmv:getlicense_client',source,result[1].DmvTest)
+      
+
+end)
+
+
+
+
 --[[DMV TheoryTest]]--
 RegisterServerEvent("dmv:success")
 AddEventHandler("dmv:success", function()
@@ -44,7 +68,7 @@ AddEventHandler("dmv:dtcharge", function()
     end)
 end)
 
-ESX.RegisterServerCallback("dmv:LicenseStatus", function(_source , cb)
+ESX.RegisterServerCallback("dmv:LicenseStatus", function(source , cb)
 	local _source        = source
 	local xPlayer        = ESX.GetPlayerFromId(_source)
     MySQL.Async.fetchAll(
@@ -57,3 +81,4 @@ ESX.RegisterServerCallback("dmv:LicenseStatus", function(_source , cb)
         end
     )
 end)
+
